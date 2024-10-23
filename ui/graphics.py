@@ -6,8 +6,15 @@ class Graphics():
     pygame.init()
 
     self.game = game
+    self.block_size = 20
+    self.block_gap = 0
+    self.border = 30
+  
     self.font = pygame.font.Font(None, 25)
-    self.screen = pygame.display.set_mode(self.game.board.size)
+    self.screen = pygame.display.set_mode((
+      self.game.board_columns * (self.block_size + self.block_gap) + (self.border * 2),
+      (self.game.board_rows + 1) * (self.block_size + self.block_gap) + (self.border * 2)
+    ))
     
   def draw_text(self, text, color, x, y):
     text_image = self.font.render(text, True, color)
@@ -17,10 +24,10 @@ class Graphics():
     for position in character.positions:
       # tuple for (left, top, width, height)
       rectangle = (
-        (position.x * (self.game.board.block_size + self.game.board.block_gap)) + self.game.board.border,
-        (position.y * (self.game.board.block_size + self.game.board.block_gap)) + self.game.board.border,
-        self.game.board.block_size,
-        self.game.board.block_size
+        (position.x * (self.block_size + self.block_gap)) + self.border,
+        ((self.game.board_rows - position.y +1) * (self.block_size + self.block_gap)),
+        self.block_size,
+        self.block_size
       )
       pygame.draw.rect(self.screen, character.color, rectangle)
   
@@ -30,17 +37,17 @@ class Graphics():
     self.screen.fill('white')
   
     self.draw_text(
-      f'SCORE: {self.game.score} | HIGH SCORE: {self.game.high_score}',
+      f'SCORE: {self.game.characters.score} | HIGH SCORE: {self.game.high_score}',
       "black",
-      self.game.board.border,
-      self.game.board.border / 3
+      self.border,
+      self.border / 3
     )
     if self.game.game_over:
       self.draw_text(
         "GAME OVER. PRESS SPACE.",
-        "Green",
-        self.game.board.border,
-        self.game.board.height - self.game.board.border,
+        "black",
+        self.border,
+        self.game.board_rows * (self.block_size + self.block_gap) + (self.border * 2),
       )  
     for character in self.game.characters.list:
       self.draw_character(character)
@@ -52,7 +59,7 @@ class Graphics():
     for character in self.game.characters.list:
       for position in character.positions:
         all_positions.append(position)
-    board_positions = self.game.board.rows * self.game.board.columns
+    board_positions = self.game.board_rows * self.game.board_columns
     if len(all_positions) != board_positions:
       raise ValueError(
         f"Characters occupy {len(all_positions)} positions "
