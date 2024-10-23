@@ -8,4 +8,5 @@ class Wall(Character):
     self.color = 'yellow'
 
   def hit_by_snake(self, game, at_position):
+    # When the snake's next position is a wall the game is over
     game.game_over = True
