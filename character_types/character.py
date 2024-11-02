@@ -1,10 +1,14 @@
-from typing import List
+from typing import List, Literal
 from position import Position
 
 
 # This is the base class that all character types extend.
 class Character():
   positions: List[Position]
+  color: Literal[
+    "green", "red", "white", "blue", "yellow", "black",
+    "cyan", "magenta"
+  ]
 
   @property
   def score(self) -> int:
@@ -19,7 +23,7 @@ class Character():
     # By default nothing happens when an object is hit by a snake
     return
 
-  def handle_user_interaction(self, key, pygame):
+  def handle_user_interaction(self, key, keyboard):
     # By default characters don't respond to user interactions
     return
 

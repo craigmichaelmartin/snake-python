@@ -75,20 +75,20 @@ class Snake(Character):
       self.positions.insert(0, at_position)
       self.positions.pop()
   
-  def handle_user_interaction(self, key, pygame):
+  def handle_user_interaction(self, key, keyboard):
     # If the up key is pressed and the snake is not going down
     # change the direction to up
-    if key == pygame.K_UP and self.direction != 'down':
+    if key == keyboard.KEY_UP and self.direction != 'down':
         self.direction = 'up'
       
     # If the down key is pressed and the snake is not going up
     # change the direction to down
-    if key == pygame.K_DOWN and self.direction != 'up':
+    if key == keyboard.KEY_DOWN and self.direction != 'up':
         self.direction = 'down'
 
     # If the left key is pressed and the snake is not going right
     # change the direction to left
-    if key == pygame.K_LEFT and self.direction != 'right':
+    if key == keyboard.KEY_LEFT and self.direction != 'right':
         self.direction = 'left'
 
     # 🐛 BUG LOCATION 🐛

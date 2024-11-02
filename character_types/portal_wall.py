@@ -6,7 +6,7 @@ class PortalWall(Character):
 
   def __init__(self, positions):
     self.positions = positions
-    self.color = 'grey'
+    self.color = 'green'
   
   def hit_by_snake(self, game, at_position):
     # Get the new position that the portal transports to

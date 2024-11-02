@@ -1,5 +1,6 @@
 import time
-import pygame
+import curses
+
 
 from game_builders.with_regular_walls import WithRegularWalls
 from game_builders.with_portal_walls import WithPortalWalls
@@ -7,7 +8,10 @@ from database.operations import get_high_score, save_high_score
 from ui.graphics import Graphics
 
 class Game():
-  def __init__(self):
+  def __init__(self, screen):
+    # Save the `screen` instance that curses gave us
+    self.screen = screen
+
     # Create an instance of the game builder we'll use,
     # and store it in `game_builder`
     # 🕵️ Try changing this to the `WithPortalWalls` builder
@@ -41,7 +45,8 @@ class Game():
     while True:
       
       # Respond to any user interactions
-      self.handle_user_interactions()
+      key = self.screen.getch()
+      self.handle_user_interactions(key)
 
       # If the game is not over, call `update` on each character
       # in case they have a "turn" (like how the snake moves forward)
@@ -65,25 +70,24 @@ class Game():
       # re-starting the loop for a new turn
       time.sleep(self.delay)
 
-  def handle_user_interactions(self):
-    for event in pygame.event.get():
-      if event.type == pygame.KEYDOWN:
-        # If the user presses the escape key then exit the program
-        if event.key == pygame.K_ESCAPE:
-          exit()
-        # If the user presses the space key then re-setup the game
-        if event.key == pygame.K_SPACE:
-          # 🐛 BUG LOCATION 🐛
-          # We want the space bar to re-setup the game. There is a
-          # method called `setup_game` but we are not calling it.
-          # Instead we are calling `exit`.
-          exit()
-          
-        # Pass whatever key is pressed to each character,
-        # in case they are supposed to respond to it (like the arrow
-        # keys for the snake).
-        for character in self.characters.list:
-          character.handle_user_interaction(event.key, pygame)
+  def handle_user_interactions(self, key):
+    # If the user presses the "q" key then quit the game
+    if key == ord('q'):
+      exit()
+
+    # If the user presses the space key then re-setup the game
+    if key == ord(' '):
+      # 🐛 BUG LOCATION 🐛
+      # We want the space bar to re-setup the game. There is a
+      # method called `setup_game` but we are not calling it.
+      # Instead we are calling `exit`.
+      exit()
+
+    # Pass whatever key is pressed to each character,
+    # in case they are supposed to respond to it (like the arrow
+    # keys for the snake).
+    for character in self.characters.list:
+      character.handle_user_interaction(key, curses)
 
   @property
   def board_rows(self):
