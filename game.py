@@ -1,16 +1,13 @@
 import time
-import curses
-
 
 from game_builders.with_regular_walls import WithRegularWalls
 from game_builders.with_portal_walls import WithPortalWalls
 from database.operations import get_high_score, save_high_score
-from ui.graphics import Graphics
 
 class Game():
-  def __init__(self, screen):
+  def __init__(self, graphics):
     # Save the `screen` instance that curses gave us
-    self.screen = screen
+    self.graphics = graphics
 
     # Create an instance of the game builder we'll use,
     # and store it in `game_builder`
@@ -19,9 +16,6 @@ class Game():
 
     # Setup the game
     self.setup_game()
-
-    # Start the game
-    self.start_game_loop()
 
   def setup_game(self):
     # Call `create` on the game builder and store the characters
@@ -38,14 +32,11 @@ class Game():
     self.delay = .2
 
   def start_game_loop(self):
-    # Create a Graphics instance passing it this game instance
-    graphics = Graphics(self)
-
     # This loop runs forever
     while True:
       
       # Respond to any user interactions
-      key = self.screen.getch()
+      key = self.graphics.get_key()
       self.handle_user_interactions(key)
 
       # If the game is not over, call `update` on each character
@@ -64,7 +55,7 @@ class Game():
         save_high_score(self.high_score)
 
       # Update the graphics to show what happened
-      graphics.draw_game()
+      self.graphics.draw_game()
       
       # Since computers are so fast, we add a quick pause before
       # re-starting the loop for a new turn
@@ -87,7 +78,7 @@ class Game():
     # in case they are supposed to respond to it (like the arrow
     # keys for the snake).
     for character in self.characters.list:
-      character.handle_user_interaction(key, curses)
+      character.handle_user_interaction(key, self.graphics)
 
   @property
   def board_rows(self):

@@ -1,23 +1,49 @@
 import curses
-
+from game import Game
 
 class Graphics():
-  def __init__(self, game):
-    self.game = game
+  def __init__(self, with_curses):
+    self.with_curses = with_curses
+  def get_key(self):
+    return self.with_curses.screen.getch()
+  def draw_game(self):
+    self.with_curses.draw_game()
+
+  @property
+  def KEY_UP(self):
+    return curses.KEY_UP
+  @property
+  def KEY_DOWN(self):
+    return curses.KEY_DOWN
+  @property
+  def KEY_LEFT(self):
+    return curses.KEY_LEFT
+  @property
+  def KEY_RIGHT(self):
+    return curses.KEY_RIGHT
+
+class WithCurses():
+  def __init__(self):
+    curses.wrapper(self.setup)
+
+  def setup(self, screen):
+    self.screen = screen
+    self.game = Game(Graphics(self))
     self.setup_colors()
     curses.curs_set(0)
-    self.game.screen.keypad(1)
+    self.screen.keypad(1)
     curses.noecho()
     curses.cbreak()
-    self.game.screen.nodelay(1)
+    self.screen.nodelay(1)
+    self.game.start_game_loop()
 
   def draw_game(self):
     self.ensure_valid_state()
-    self.game.screen.clear()
+    self.screen.clear()
     self.draw_score_text()
     self.draw_characters()
     self.draw_game_over_text()
-    self.game.screen.refresh()
+    self.screen.refresh()
 
   def draw_score_text(self):
     score_text = f'SCORE: {self.game.characters.score}'
@@ -54,10 +80,10 @@ class Graphics():
   def draw_text(self, x, y, text, color_pair=0):
     try:
       if color_pair:
-        self.game.screen.attron(curses.color_pair(color_pair))
-      self.game.screen.addstr(y, x, text)
+        self.screen.attron(curses.color_pair(color_pair))
+      self.screen.addstr(y, x, text)
       if color_pair:
-        self.game.screen.attroff(curses.color_pair(color_pair))
+        self.screen.attroff(curses.color_pair(color_pair))
     except curses.error:
         pass
 
