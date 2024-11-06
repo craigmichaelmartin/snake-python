@@ -100,6 +100,26 @@ if age > 16:
 # and so "You are old enough to drive" is NOT printed.
 
 
+# The if statement can have any expression which evaluates to
+# true or false.
+
+# Expression checking if one number is GREATER THAN another
+if age > 16:
+  print("Age is greater than 16")
+
+# Expression checking if one number is LESS THAN another
+if age < 16:
+  print("Age is less than 16")
+
+# Expression checking if one number is EQUAL TO another
+if age == 16: # notice the double equal signs
+  print("Age is exactly 16")
+
+# Expression checking if one number is LESS THAN another
+if age != 16:
+  print("Age is not 16")
+
+
 # If statements can have an `else`.
 # The `else` is ran if the if condition is not true.
 
