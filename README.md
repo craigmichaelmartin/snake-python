@@ -15,5 +15,4 @@ Welcome to snake! It works pretty well, but there are some bugs and some opportu
 3. Add random walls to the middle of the board that the snake has to avoid.
 4. Add a Pause option. If the user presses "p" for pause, the game pauses.
 5. Add a `candy` character the snake should avoid. Eating it does not add to the score and grow the snake, instead it makes the game go faster (makes the delay between each turn slightly less).
-6. Add levels. Every 10 points the board resets and the snake enters a new level (you can use game builders for each level)
-7. Add a `bomb` character that appears in a random location and "explodes" (effecting each square touching it) after a random amount of turns. If the snake head hits the bomb or explosion the game ends. After an explosion the bomb is removed for a random ammount of turns and then appears again.
+6. Add a `bomb` character that appears in a random location and "explodes" (effecting each square touching it) after a random amount of turns. If the snake head hits the bomb or explosion the game ends. After an explosion the bomb is removed for a random ammount of turns and then appears again.
