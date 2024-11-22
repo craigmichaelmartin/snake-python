@@ -1,57 +1,77 @@
 import curses
-from ui.curses.io import Io
 
 class Graphics():
-  def __init__(self, Game):
-    self.Game = Game
-    curses.wrapper(self.setup)
+  def __init__(self, on_ready):
+    curses.wrapper(self.setup, on_ready)
+    
+  @property
+  def KEY_UP(self):
+    return curses.KEY_UP
+    
+  @property
+  def KEY_DOWN(self):
+    return curses.KEY_DOWN
+    
+  @property
+  def KEY_LEFT(self):
+    return curses.KEY_LEFT
+    
+  @property
+  def KEY_RIGHT(self):
+    return curses.KEY_RIGHT
 
-  def setup(self, screen):
+  def game_specific_setup(self, _game):
+    pass
+
+  def get_key(self):
+    return self.screen.getch()
+
+  def draw_game(self, game):
+    self.screen.clear()
+    self.draw_score_text(game)
+    self.draw_characters(game)
+    self.draw_game_over_text(game)
+    self.screen.refresh()
+    
+
+  def setup(self, screen, on_ready):
     self.screen = screen
-    self.game = self.Game(Io(self))
     self.setup_colors()
     curses.curs_set(0)
     self.screen.keypad(1)
     curses.noecho()
     curses.cbreak()
     self.screen.nodelay(1)
-    self.game.start_game_loop()
+    on_ready(self)
 
-  def draw_game(self):
-    self.screen.clear()
-    self.draw_score_text()
-    self.draw_characters()
-    self.draw_game_over_text()
-    self.screen.refresh()
-
-  def draw_score_text(self):
-    score_text = f'SCORE: {self.game.characters.score}'
-    high_score_text = f'HIGH: {self.game.high_score}'
+  def draw_score_text(self, game):
+    score_text = f'SCORE: {game.characters.score}'
+    high_score_text = f'HIGH: {game.high_score}'
     self.draw_text(0, 0, score_text)
     self.draw_text(
-      (self.game.board_columns * 2) - len(high_score_text),
+      (game.board_columns * 2) - len(high_score_text),
       0,
       high_score_text
     )
 
-  def draw_game_over_text(self):
-    if self.game.game_over:
+  def draw_game_over_text(self, game):
+    if game.game_over:
       game_over_text = "GAME OVER. PRESS SPACE."
       self.draw_text(
-        ((self.game.board_columns * 2) - len(game_over_text)) // 2,
-        (self.game.board_rows // 2) + 1,
+        ((game.board_columns * 2) - len(game_over_text)) // 2,
+        (game.board_rows // 2) + 1,
         game_over_text
       )
 
-  def draw_characters(self):
-    for character in self.game.characters.list:
-      self.draw_character(character)
+  def draw_characters(self, game):
+    for character in game.characters.list:
+      self.draw_character(character, game)
 
-  def draw_character(self, character):
+  def draw_character(self, character, game):
     for position in character.positions:
       self.draw_text(
         position.x * 2,
-        self.game.board_rows - position.y + 1,
+        game.board_rows - position.y + 1,
         '██',
         self.colors[character.color]
       )

@@ -6,16 +6,23 @@ from database.operations import get_high_score, save_high_score
 
 class Game():
   def __init__(self, graphics):
-    # Save the `screen` instance that curses gave us
+    # Store the graphics instance in an instance variable
     self.graphics = graphics
 
     # Create an instance of the game builder we'll use,
-    # and store it in `game_builder`
+    # and store it in an instance variable
     # 🕵️ Try changing this to the `WithPortalWalls` builder
     self.game_builder = WithRegularWalls()
 
     # Setup the game
     self.setup_game()
+
+    # Finish setting up graphics details (some configuration
+    # like the size of the board depends on game data)
+    self.graphics.game_specific_setup(self)
+
+    # Start the game
+    self.start_game_loop()
 
   def setup_game(self):
     # Call `create` on the game builder and store the characters
@@ -58,7 +65,7 @@ class Game():
       self.ensure_valid_state()
       
       # Update the graphics to show what happened
-      self.graphics.draw_game()
+      self.graphics.draw_game(self)
       
       # Since computers are so fast, we add a quick pause before
       # re-starting the loop for a new turn
