@@ -1,34 +1,14 @@
 import curses
-from game import Game
+from ui.curses.io import Io
 
 class Graphics():
-  def __init__(self, with_curses):
-    self.with_curses = with_curses
-  def get_key(self):
-    return self.with_curses.screen.getch()
-  def draw_game(self):
-    self.with_curses.draw_game()
-
-  @property
-  def KEY_UP(self):
-    return curses.KEY_UP
-  @property
-  def KEY_DOWN(self):
-    return curses.KEY_DOWN
-  @property
-  def KEY_LEFT(self):
-    return curses.KEY_LEFT
-  @property
-  def KEY_RIGHT(self):
-    return curses.KEY_RIGHT
-
-class WithCurses():
-  def __init__(self):
+  def __init__(self, Game):
+    self.Game = Game
     curses.wrapper(self.setup)
 
   def setup(self, screen):
     self.screen = screen
-    self.game = Game(Graphics(self))
+    self.game = self.Game(Io(self))
     self.setup_colors()
     curses.curs_set(0)
     self.screen.keypad(1)
@@ -38,7 +18,6 @@ class WithCurses():
     self.game.start_game_loop()
 
   def draw_game(self):
-    self.ensure_valid_state()
     self.screen.clear()
     self.draw_score_text()
     self.draw_characters()
@@ -107,19 +86,3 @@ class WithCurses():
       "cyan": 7,
       "magenta": 8
     }
-
-  def ensure_valid_state(self):
-    all_positions = []
-    for character in self.game.characters.list:
-      for position in character.positions:
-        all_positions.append(position)
-    board_positions = self.game.board_rows * self.game.board_columns
-    if len(all_positions) != board_positions:
-      raise ValueError(
-        f"Characters occupy {len(all_positions)} positions "
-        f"but the board has {board_positions} positions."
-      )
-    if len(set(all_positions)) != len(all_positions):
-      raise ValueError(
-        "The same position is occupied more than once."
-      )

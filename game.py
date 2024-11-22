@@ -54,6 +54,9 @@ class Game():
         self.high_score = self.characters.score
         save_high_score(self.high_score)
 
+      # Ensure the game is still in a valid state
+      self.ensure_valid_state()
+      
       # Update the graphics to show what happened
       self.graphics.draw_game()
       
@@ -93,3 +96,19 @@ class Game():
       (pos for character in self.characters.list for pos in character.positions), 
       key=lambda pos: pos.y
     ).y + 1
+
+  def ensure_valid_state(self):
+    all_positions = []
+    for character in self.characters.list:
+      for position in character.positions:
+        all_positions.append(position)
+    board_positions = self.board_rows * self.board_columns
+    if len(all_positions) != board_positions:
+      raise ValueError(
+        f"Characters occupy {len(all_positions)} positions "
+        f"but the board has {board_positions} positions."
+      )
+    if len(set(all_positions)) != len(all_positions):
+      raise ValueError(
+        "The same position is occupied more than once."
+      )

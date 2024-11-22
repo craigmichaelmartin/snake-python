@@ -5,10 +5,8 @@ from character_types.portal_wall import PortalWall
 from character_types.snake import Snake
 from characters import Characters
 from position import Position
-from game_builders.game_builder import GameBuilder
 
-
-class WithPortalWalls(GameBuilder):
+class WithPortalWalls():
 
   def create(self):
     # 🕵️ Try changing these numbers

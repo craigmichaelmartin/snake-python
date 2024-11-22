@@ -1,34 +1,11 @@
 import pygame
-import curses
-from game import Game
+from ui.pygame.io import Io
+
 
 class Graphics():
-  def __init__(self, with_pygame):
-    self.with_pygame = with_pygame
-  def get_key(self):
-    for event in pygame.event.get():
-      if event.type == pygame.KEYDOWN:
-        return event.key
-  def draw_game(self):
-    self.with_pygame.draw_game()
-
-  @property
-  def KEY_UP(self):
-    return pygame.K_UP
-  @property
-  def KEY_DOWN(self):
-    return pygame.K_DOWN
-  @property
-  def KEY_LEFT(self):
-    return pygame.K_LEFT
-  @property
-  def KEY_RIGHT(self):
-    return pygame.K_RIGHT
-
-class WithPygame():
-  def __init__(self):
+  def __init__(self, Game):
     pygame.init()
-    self.game = Game(Graphics(self))
+    self.game = Game(Io(self))
     self.setup()
 
   def setup(self):
@@ -59,8 +36,6 @@ class WithPygame():
       pygame.draw.rect(self.screen, character.color, rectangle)
 
   def draw_game(self):
-    self.ensure_valid_state()
-
     self.screen.fill('white')
 
     self.draw_text(
@@ -80,21 +55,3 @@ class WithPygame():
       self.draw_character(character)
 
     pygame.display.update()
-
-  def ensure_valid_state(self):
-    all_positions = []
-    for character in self.game.characters.list:
-      for position in character.positions:
-        all_positions.append(position)
-    board_positions = self.game.board_rows * self.game.board_columns
-    if len(all_positions) != board_positions:
-      raise ValueError(
-        f"Characters occupy {len(all_positions)} positions "
-        f"but the board has {board_positions} positions."
-        f"The character list is: {self.game.characters.list}"
-      )
-    if len(set(all_positions)) != len(all_positions):
-      raise ValueError(
-        f"The same position is occupied more than once."
-        f"The character list is: {self.game.characters.list}"
-      )
